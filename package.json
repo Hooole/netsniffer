@@ -1,22 +1,23 @@
 {
-  "name": "rpa-ai-packet-capture",
+  "name": "netsniffer",
   "version": "1.0.0",
-  "description": "RPA-AI 抓包工具 - 基于 Electron 的网络抓包软件",
+  "description": "NetSniffer - 基于 Electron 的网络抓包工具，支持 HTTP/HTTPS 请求拦截和分析",
   "main": "main.js",
-  "homepage": "https://github.com/hoole/rpa-ai",
+  "homepage": "https://github.com/hoole/netsniffer",
   "author": {
-    "name": "RPA-AI Team",
-    "email": "team@rpa-ai.com"
+    "name": "NetSniffer Team",
+    "email": "team@netsniffer.app"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hoole/rpa-ai.git"
+    "url": "https://github.com/hoole/netsniffer.git"
   },
   "bugs": {
-    "url": "https://github.com/hoole/rpa-ai/issues"
+    "url": "https://github.com/hoole/netsniffer/issues"
   },
   "keywords": [
+    "netsniffer",
     "electron",
     "packet-capture",
     "network-analysis",
@@ -53,8 +54,8 @@
     "wait-on": "^8.0.4"
   },
   "build": {
-    "appId": "com.rpa-ai.packet-capture",
-    "productName": "RPA-AI 抓包工具",
+    "appId": "com.netsniffer.app",
+    "productName": "NetSniffer",
     "directories": {
       "output": "dist"
     },
@@ -138,10 +139,10 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "RPA-AI 抓包工具"
+      "shortcutName": "NetSniffer"
     },
     "dmg": {
-      "title": "RPA-AI 抓包工具",
+      "title": "NetSniffer",
       "window": {
         "width": 540,
         "height": 380

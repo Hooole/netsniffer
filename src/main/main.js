@@ -16,7 +16,7 @@ function createMainWindow() {
       preload: path.join(__dirname, 'preload.js')
     },
     icon: path.join(__dirname, '..', '..', 'assets', 'icon.png'),
-    title: 'RPA-AI 抓包工具',
+    title: 'NetSniffer',
     show: false, // 先隐藏窗口，等加载完成后再显示
     minWidth: 800,
     minHeight: 600

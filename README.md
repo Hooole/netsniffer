@@ -1,4 +1,4 @@
-# RPA-AI 抓包工具
+# NetSniffer
 
 一个基于 Electron + Vue.js + Whistle 的桌面抓包工具，支持 HTTP/HTTPS 请求拦截和分析。
 

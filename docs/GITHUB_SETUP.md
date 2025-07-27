@@ -9,8 +9,8 @@
 1. 登录 GitHub
 2. 点击右上角的 "+" 号，选择 "New repository"
 3. 填写仓库信息：
-   - **Repository name**: `rpa-ai`
-   - **Description**: RPA-AI 抓包工具 - 基于 Electron 的网络抓包软件
+   - **Repository name**: `netsniffer`
+   - **Description**: NetSniffer - 基于 Electron 的网络抓包工具
    - **Visibility**: Public 或 Private
    - **不要**勾选 "Add a README file"（我们已经有 README.md）
 4. 点击 "Create repository"
@@ -41,7 +41,7 @@ git commit -m "Initial commit: RPA-AI 抓包工具"
 
 ```bash
 # 添加远程仓库（替换 YOUR_USERNAME 为你的 GitHub 用户名）
-git remote add origin https://github.com/YOUR_USERNAME/rpa-ai.git
+git remote add origin https://github.com/YOUR_USERNAME/netsniffer.git
 
 # 推送到 GitHub
 git push -u origin main
@@ -118,12 +118,13 @@ git push origin v1.0.1
 
 在仓库设置中添加描述：
 ```
-RPA-AI 抓包工具 - 基于 Electron + Vue.js + Whistle 的桌面抓包软件，支持 HTTP/HTTPS 请求拦截和分析。
+NetSniffer - 基于 Electron + Vue.js + Whistle 的桌面抓包软件，支持 HTTP/HTTPS 请求拦截和分析。
 ```
 
 ### 2. 主题标签
 
 添加相关主题标签：
+- `netsniffer`
 - `electron`
 - `packet-capture`
 - `network-analysis`
@@ -150,7 +151,7 @@ RPA-AI 抓包工具 - 基于 Electron + Vue.js + Whistle 的桌面抓包软件�
    git remote -v
    
    # 重新设置远程仓库
-   git remote set-url origin https://github.com/YOUR_USERNAME/rpa-ai.git
+   git remote set-url origin https://github.com/YOUR_USERNAME/netsniffer.git
    ```
 
 2. **GitHub Actions 失败**
