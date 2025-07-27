@@ -1,0 +1,155 @@
+{
+  "name": "rpa-ai-packet-capture",
+  "version": "1.0.0",
+  "description": "RPA-AI 抓包工具 - 基于 Electron 的网络抓包软件",
+  "main": "main.js",
+  "homepage": "https://github.com/hoole/rpa-ai",
+  "author": {
+    "name": "RPA-AI Team",
+    "email": "team@rpa-ai.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hoole/rpa-ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hoole/rpa-ai/issues"
+  },
+  "keywords": [
+    "electron",
+    "packet-capture",
+    "network-analysis",
+    "http-proxy",
+    "https-proxy",
+    "mitm",
+    "vue",
+    "element-plus"
+  ],
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"npm run dev:frontend\" \"wait-on http://localhost:8080 && npm run dev:electron\"",
+    "dev:frontend": "cd frontend && npm run serve",
+    "dev:electron": "electron . --dev",
+    "build": "npm run build:frontend && electron-builder",
+    "build:frontend": "cd frontend && npm run build",
+    "build:mac": "npm run build:frontend && electron-builder --mac",
+    "build:win": "npm run build:frontend && electron-builder --win",
+    "build:linux": "npm run build:frontend && electron-builder --linux",
+    "build:all": "npm run build:frontend && electron-builder -mwl",
+    "package:mac": "npm run build:frontend && electron-builder --dir --mac",
+    "package:win": "npm run build:frontend && electron-builder --dir --win",
+    "package:linux": "npm run build:frontend && electron-builder --dir --linux",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "electron": "^22.3.27",
+    "fs-extra": "^11.1.1",
+    "whistle": "^2.9.99"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "electron-builder": "^24.6.4",
+    "wait-on": "^8.0.4"
+  },
+  "build": {
+    "appId": "com.rpa-ai.packet-capture",
+    "productName": "RPA-AI 抓包工具",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "src/**/*",
+      "certs/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "certs",
+        "to": "certs"
+      },
+      {
+        "from": ".whistle",
+        "to": ".whistle"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Development",
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "RPA-AI 抓包工具"
+    },
+    "dmg": {
+      "title": "RPA-AI 抓包工具",
+      "window": {
+        "width": 540,
+        "height": 380
+      }
+    }
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
