@@ -1,6 +1,6 @@
 {
   "name": "netsniffer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "NetSniffer - 基于 Electron 的网络抓包工具，支持 HTTP/HTTPS 请求拦截和分析",
   "main": "main.js",
   "homepage": "https://github.com/hoole/netsniffer",
