@@ -1,12 +1,12 @@
 # 构建指南
 
-本指南将帮助你构建 RPA-AI 抓包工具的桌面应用程序，支持 Windows、macOS 和 Linux 平台。
+本指南将帮助你构建 NetSniffer 的桌面应用程序，支持 Windows、macOS 和 Linux 平台。
 
 ## 环境要求
 
 ### 基础要求
 - Node.js 16+ 
-- npm 8+
+- pnpm 8+
 - Git
 
 ### 平台特定要求
@@ -27,11 +27,8 @@
 ## 安装依赖
 
 ```bash
-# 安装主项目依赖
-npm install
-
-# 安装前端依赖
-cd frontend && npm install && cd ..
+# 安装项目依赖
+pnpm install
 ```
 
 ## 构建流程
@@ -49,11 +46,7 @@ node build/generate-icons.js
 - `build/icon.png` (Linux) 
 - `build/icon.icns` (macOS)
 
-### 2. 构建前端
-
-```bash
-npm run build:frontend
-```
+### 2. 构建前端（已迁移至 React + TS，如无单独前端子项目可忽略）
 
 ### 3. 构建桌面应用
 
@@ -61,19 +54,19 @@ npm run build:frontend
 
 ```bash
 # macOS
-npm run build:mac
+pnpm run dist:mac
 
 # Windows  
-npm run build:win
+pnpm run dist:win
 
 # Linux
-npm run build:linux
+pnpm run dist:linux
 ```
 
-#### 构建所有平台
+#### 多平台打包
 
 ```bash
-npm run build:all
+pnpm run dist
 ```
 
 #### 使用构建脚本
@@ -97,16 +90,16 @@ node build/build.js all
 构建完成后，应用文件将位于 `dist/` 目录：
 
 ### macOS
-- `RPA-AI 抓包工具-1.0.0.dmg` - 安装包
-- `RPA-AI 抓包工具-1.0.0-mac.zip` - 压缩包
+- `NetSniffer-1.0.0.dmg` - 安装包
+- `NetSniffer-1.0.0-mac.zip` - 压缩包
 
 ### Windows
-- `RPA-AI 抓包工具 Setup 1.0.0.exe` - 安装程序
-- `RPA-AI 抓包工具-1.0.0-win.zip` - 便携版
+- `NetSniffer Setup 1.0.0.exe` - 安装程序
+- `NetSniffer-1.0.0-win.zip` - 便携版
 
 ### Linux
-- `RPA-AI 抓包工具-1.0.0.AppImage` - AppImage 格式
-- `rpa-ai-packet-capture_1.0.0_amd64.deb` - Debian 包
+- `NetSniffer-1.0.0.AppImage` - AppImage 格式
+- `netsniffer_1.0.0_amd64.deb` - Debian 包
 
 ## 代码签名 (可选)
 
@@ -153,7 +146,7 @@ node build/build.js all
     "publish": {
       "provider": "github",
       "owner": "你的GitHub用户名",
-      "repo": "rpa-ai"
+    "repo": "netsniffer"
     }
   }
 }
@@ -165,14 +158,14 @@ node build/build.js all
 
 ```json
 {
-  "name": "rpa-ai-packet-capture",
+  "name": "netsniffer",
   "version": "1.0.0",
-  "description": "RPA-AI 抓包工具",
+  "description": "NetSniffer",
   "author": {
-    "name": "RPA-AI Team",
+  "name": "NetSniffer Team",
     "email": "team@rpa-ai.com"
   },
-  "homepage": "https://github.com/your-username/rpa-ai"
+  "homepage": "https://github.com/your-username/netsniffer"
 }
 ```
 
@@ -189,7 +182,7 @@ node build/build.js all
 
 ```bash
 # 查看详细构建日志
-DEBUG=electron-builder npm run build:mac
+DEBUG=electron-builder pnpm run dist:mac
 
 # 清理构建缓存
 rm -rf dist/ node_modules/.cache
@@ -220,12 +213,10 @@ jobs:
       with:
         node-version: '16'
     
-    - run: npm ci
-    - run: cd frontend && npm ci && cd ..
-    - run: npm run build:frontend
+    - run: pnpm install --frozen-lockfile
     
     - name: Build app
-      run: npm run build:${{ matrix.os == 'macos-latest' && 'mac' || matrix.os == 'windows-latest' && 'win' || 'linux' }}
+      run: pnpm run ${{ matrix.os == 'macos-latest' && 'dist:mac' || matrix.os == 'windows-latest' && 'dist:win' || 'dist:linux' }}
     
     - name: Upload artifacts
       uses: actions/upload-artifact@v3

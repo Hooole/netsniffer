@@ -25,7 +25,7 @@ function createMainWindow() {
   // 开发模式下加载前端开发服务器
   if (process.argv.includes('--dev')) {
     mainWindow.loadURL('http://localhost:8080');
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   } else {
     // 生产模式下加载构建后的文件
     mainWindow.loadFile(path.join(__dirname, '..', '..', 'frontend', 'dist', 'index.html'));

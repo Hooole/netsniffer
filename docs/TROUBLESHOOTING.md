@@ -5,7 +5,7 @@
 ### 1. 应用启动问题
 
 #### 问题：应用无法启动
-**症状：** 双击应用图标或运行 `npm start` 后应用无响应
+**症状：** 双击应用图标或运行 `pnpm start` 后应用无响应
 
 **可能原因：**
 - Node.js 版本不兼容
@@ -18,23 +18,23 @@
 node --version  # 应该是 16.0.0 或更高
 
 # 2. 重新安装依赖
-rm -rf node_modules package-lock.json
-npm install
+rm -rf node_modules package-lock.json pnpm-lock.yaml
+pnpm install
 
 # 3. 清除缓存
-npm cache clean --force
+pnpm store prune
 
 # 4. 重新安装 Electron
-npm run postinstall
+pnpm run postinstall
 ```
 
 #### 问题：Electron 安装失败
-**症状：** `npm install` 时 Electron 下载失败
+**症状：** `pnpm install` 时 Electron 下载失败
 
 **解决方案：**
 ```bash
 # 1. 设置镜像源
-npm config set ELECTRON_MIRROR https://npmmirror.com/mirrors/electron/
+pnpm config set ELECTRON_MIRROR https://npmmirror.com/mirrors/electron/
 
 # 2. 手动下载 Electron
 cd node_modules/electron
@@ -98,8 +98,8 @@ certutil -store "ROOT" "RPA-AI MITM Proxy CA"
 networksetup -listallnetworkservices
 
 # 2. 手动设置代理
-networksetup -setwebproxy "Wi-Fi" 127.0.0.1 7788
-networksetup -setsecurewebproxy "Wi-Fi" 127.0.0.1 7788
+networksetup -setwebproxy "Wi-Fi" 127.0.0.1 7890
+networksetup -setsecurewebproxy "Wi-Fi" 127.0.0.1 7890
 networksetup -setwebproxystate "Wi-Fi" on
 networksetup -setsecurewebproxystate "Wi-Fi" on
 ```
@@ -109,7 +109,7 @@ networksetup -setsecurewebproxystate "Wi-Fi" on
 # 1. 以管理员身份运行 PowerShell
 # 2. 设置代理
 Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings' -Name ProxyEnable -Value 1
-Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings' -Name ProxyServer -Value '127.0.0.1:7788'
+Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings' -Name ProxyServer -Value '127.0.0.1:7890'
 ```
 
 #### 问题：代理设置后无法访问网络
@@ -122,13 +122,13 @@ Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet
 
 **解决方案：**
 1. 确保点击了"▶️ 开始抓包"按钮
-2. 检查端口 7788 是否被占用：
+2. 检查端口 7890 是否被占用：
    ```bash
    # macOS/Linux
-   lsof -i :7788
+lsof -i :7890
    
    # Windows
-   netstat -an | findstr 7788
+netstat -an | findstr 7890
    ```
 3. 临时关闭防火墙测试
 4. 尝试使用其他端口
@@ -146,7 +146,7 @@ Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet
 **解决方案：**
 1. 确认代理已设置：
    - 检查系统代理设置
-   - 确认代理地址为 `127.0.0.1:7788`
+- 确认代理地址为 `127.0.0.1:7890`
 2. 测试网络访问：
    - 访问 HTTP 网站（如 http://httpbin.org）
    - 检查是否有网络活动

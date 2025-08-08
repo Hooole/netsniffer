@@ -1,6 +1,6 @@
 # NetSniffer
 
-一个基于 Electron + Vue.js + Whistle 的桌面抓包工具，支持 HTTP/HTTPS 请求拦截和分析。
+一个基于 Electron + React + TypeScript + Whistle 的现代化桌面抓包工具，支持 HTTP/HTTPS 请求拦截和分析。
 
 ## 功能特性
 
@@ -16,39 +16,34 @@
 ### 安装依赖
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 开发模式运行
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 ### 生产模式运行
 
 ```bash
-npm run start
+pnpm start
 ```
 
-### 构建应用
+### 构建与打包
 
 ```bash
-# 构建当前平台
-npm run build
+# 编译代码（不生成安装包）
+pnpm run build
 
-# 构建特定平台
-npm run build:mac    # macOS
-npm run build:win    # Windows
-npm run build:linux  # Linux
+# 生成安装包（按平台）
+pnpm run dist:mac    # macOS
+pnpm run dist:win    # Windows
+pnpm run dist:linux  # Linux
 
-# 构建所有平台
-npm run build:all
-
-# 使用构建脚本
-node build/build.js mac   # macOS
-node build/build.js win   # Windows
-node build/build.js all   # 所有平台
+# 多平台一次性
+pnpm run dist        # macOS + Windows（参见 package.json）
 ```
 
 详细的构建指南请参考 [构建指南](docs/BUILD_GUIDE.md)。
@@ -65,31 +60,31 @@ node build/build.js all   # 所有平台
 ## 技术栈
 
 - **后端**: Electron + Node.js
-- **前端**: Vue.js 3 + Element Plus
+- **前端**: React 18 + Ant Design + TypeScript
 - **代理**: Whistle
-- **构建**: Vue CLI + electron-builder
+- **构建**: Webpack 5 + electron-builder
 
 ## 项目结构
 
 ```
-rpa-ai/
-├── src/                    # 源代码
-│   ├── core/              # 核心模块
-│   │   ├── whistle-proxy-server.js    # Whistle代理服务器
-│   │   ├── certificate-manager.js     # 证书管理
-│   │   └── data-exporter.js           # 数据导出
-│   ├── main/              # Electron主进程
-│   │   ├── main.js        # 窗口管理
-│   │   ├── preload.js     # 预加载脚本
-│   │   └── ipc-handlers/  # IPC通信处理
-│   └── utils/             # 工具函数
-├── frontend/              # Vue前端项目
-│   └── src/
-│       ├── components/    # Vue组件
-│       └── App.vue        # 主应用组件
+netsniffer/
+├── src/
+│   ├── main/              # Electron 主进程（TypeScript）
+│   │   ├── api/           # IPC API 注册
+│   │   ├── core/          # 业务核心（证书、代理）
+│   │   ├── ipc-handlers/  # 旧版兼容处理（如有）
+│   │   ├── preload.ts     # 预加载脚本
+│   │   └── index.ts       # 主入口
+│   └── renderer/          # 渲染进程（React + TS）
+│       ├── components/    # 通用组件（工具栏、对话框等）
+│       ├── extensions/    # 功能面板（抓包、证书、统计等）
+│       ├── store/         # 状态管理（Zustand）
+│       ├── styles/        # 样式
+│       └── index.tsx      # 渲染入口
+├── app/                   # 构建产物（Electron 启动目录）
 ├── certs/                 # 证书文件
-├── .whistle/             # Whistle配置
-└── docs/                 # 项目文档
+├── .whistle/              # Whistle 配置
+└── docs/                  # 文档（见 docs/README.md 索引）
 ```
 
 ## 开发指南
@@ -100,6 +95,16 @@ rpa-ai/
 - [API文档](docs/API.md)
 - [故障排除](docs/TROUBLESHOOTING.md)
 - [部署指南](docs/DEPLOYMENT.md)
+
+## 文档结构与清理说明
+
+为精简仓库、避免历史临时说明混淆，已清理若干阶段性、临时性修复总结类 Markdown 文件，仅保留核心 README 与 `docs/` 下的正式文档。主要变更：
+
+- 保留：`docs/` 下正式文档（API、开发、部署、故障排除等）
+- 保留：根目录 `README.md`
+- 移除：临时修复/阶段性总结类说明（如构建/证书/端口冲突的临时记录等）
+
+如需查阅历史修复细节，请参阅提交记录（git history）。
 
 ## 许可证
 

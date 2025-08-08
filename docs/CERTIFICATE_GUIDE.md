@@ -2,14 +2,14 @@
 
 ## 📋 概述
 
-RPA-AI 抓包工具使用自定义的 CA 证书来拦截和解析 HTTPS 流量。本指南详细说明证书的生成、安装和管理流程。
+NetSniffer 使用自定义的 CA 证书来拦截和解析 HTTPS 流量。本指南详细说明证书的生成、安装和管理流程。
 
 ## 📁 证书文件位置
 
 证书文件位于项目根目录的 `certs/` 文件夹中：
 
 ```
-rpa-ai/
+netsniffer/
 └── certs/
     ├── mitmproxy-ca-cert.pem  # CA证书文件
     └── mitmproxy-ca-key.pem   # CA私钥文件
@@ -32,7 +32,7 @@ rm certs/mitmproxy-ca-cert.pem
 rm certs/mitmproxy-ca-key.pem
 
 # 重启应用，会自动生成新证书
-npm run dev:electron
+pnpm electron-dev
 ```
 
 ## 🚀 自动安装功能
@@ -131,35 +131,35 @@ Import-Certificate -FilePath "C:\path\to\mitmproxy-ca-cert.pem" -CertStoreLocati
 
 ```bash
 # 检查系统Keychain中的证书
-security find-certificate -c "RPA-AI MITM Proxy CA" /Library/Keychains/System.keychain
+security find-certificate -c "NetSniffer MITM Proxy CA" /Library/Keychains/System.keychain
 
 # 检查用户Keychain中的证书（备用位置）
-security find-certificate -c "RPA-AI MITM Proxy CA" ~/Library/Keychains/login.keychain
+security find-certificate -c "NetSniffer MITM Proxy CA" ~/Library/Keychains/login.keychain
 
 # 列出所有受信任的根证书
 security list-keychains
-security find-certificate -a /Library/Keychains/System.keychain | grep "RPA-AI"
+security find-certificate -a /Library/Keychains/System.keychain | grep "NetSniffer"
 ```
 
 #### Windows 验证命令
 
 ```cmd
 # 检查证书存储
-certutil -store "ROOT" "RPA-AI MITM Proxy CA"
+certutil -store "ROOT" "NetSniffer MITM Proxy CA"
 
 # 列出所有根证书
 certutil -store "ROOT"
 
 # 使用PowerShell检查
-powershell -Command "Get-ChildItem Cert:\LocalMachine\Root | Where-Object {$_.Subject -like '*RPA-AI*'}"
+powershell -Command "Get-ChildItem Cert:\LocalMachine\Root | Where-Object {$_.Subject -like '*NetSniffer*'}"
 ```
 
 ### 3. 通过Keychain Access验证（macOS）
 
 1. 打开"钥匙串访问"应用
 2. 在左侧选择"系统"钥匙串
-3. 在搜索框中输入"RPA-AI"
-4. 应该能看到"RPA-AI MITM Proxy CA"证书
+3. 在搜索框中输入"NetSniffer"
+4. 应该能看到"NetSniffer MITM Proxy CA"证书
 5. 双击证书查看详细信息
 6. 确认"信任"设置中"使用此证书时"显示"始终信任"
 
@@ -167,14 +167,14 @@ powershell -Command "Get-ChildItem Cert:\LocalMachine\Root | Where-Object {$_.Su
 
 1. 按 `Win + R`，输入 `certmgr.msc`
 2. 展开"受信任的根证书颁发机构" → "证书"
-3. 在右侧列表中查找"RPA-AI MITM Proxy CA"
+3. 在右侧列表中查找"NetSniffer MITM Proxy CA"
 4. 双击证书查看详细信息
 
 ### 5. 通过浏览器验证
 
 #### 测试HTTPS抓包
 1. 启动抓包服务
-2. 设置系统代理为 `127.0.0.1:7788`
+2. 设置系统代理为 `127.0.0.1:7890`
 3. 访问任意HTTPS网站（如 https://www.google.com）
 4. 检查应用中的数据表格是否显示HTTPS请求
 5. 如果能看到HTTPS请求且没有证书错误，说明证书安装成功

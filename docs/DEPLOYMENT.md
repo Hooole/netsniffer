@@ -2,24 +2,24 @@
 
 ## 概述
 
-本文档介绍如何构建、打包和分发 RPA-AI 抓包工具。
+本文档介绍如何构建、打包和分发 NetSniffer。
 
 ## 构建环境
 
 ### 系统要求
 
 - **Node.js**: >= 16.0.0
-- **npm**: >= 8.0.0
+- **pnpm**: >= 8.0.0
 - **操作系统**: macOS, Windows, Linux
 
 ### 依赖安装
 
 ```bash
 # 安装项目依赖
-npm install
+pnpm install
 
 # 安装 Electron 依赖
-npm run postinstall
+pnpm run postinstall
 ```
 
 ## 构建配置
@@ -31,8 +31,8 @@ npm run postinstall
 ```json
 {
   "build": {
-    "appId": "com.rpa-ai.packet-capture",
-    "productName": "RPA-AI 抓包工具",
+  "appId": "app.netsniffer.desktop",
+  "productName": "NetSniffer",
     "directories": {
       "output": "dist"
     },
@@ -115,29 +115,26 @@ npm run postinstall
 
 ```bash
 # 构建应用（不打包）
-npm run build
+pnpm run build
 
 # 构建并打包
-npm run package
+pnpm run dist
 ```
 
 ### 2. 平台特定构建
 
 ```bash
 # macOS
-npm run build:mac
-npm run package:mac
+pnpm run dist:mac
 
 # Windows
-npm run build:win
-npm run package:win
+pnpm run dist:win
 
 # Linux
-npm run build:linux
-npm run package:linux
+pnpm run dist:linux
 
-# 所有平台
-npm run build:all
+# 多平台（按配置）
+pnpm run dist
 ```
 
 ### 3. 构建输出
@@ -147,15 +144,15 @@ npm run build:all
 ```
 dist/
 ├── mac/                 # macOS 构建文件
-│   ├── RPA-AI 抓包工具.app
-│   ├── RPA-AI 抓包工具-1.0.0.dmg
-│   └── RPA-AI 抓包工具-1.0.0-mac.zip
+│   ├── NetSniffer.app
+│   ├── NetSniffer-1.0.0.dmg
+│   └── NetSniffer-1.0.0-mac.zip
 ├── win/                 # Windows 构建文件
-│   ├── RPA-AI 抓包工具 Setup 1.0.0.exe
-│   └── RPA-AI 抓包工具.exe
+│   ├── NetSniffer Setup 1.0.0.exe
+│   └── NetSniffer.exe
 └── linux/              # Linux 构建文件
-    ├── RPA-AI 抓包工具-1.0.0.AppImage
-    └── rpa-ai-packet-capture_1.0.0_amd64.deb
+    ├── NetSniffer-1.0.0.AppImage
+    └── netsniffer_1.0.0_amd64.deb
 ```
 
 ## 签名和公证
@@ -209,10 +206,10 @@ security find-identity -v -p codesigning
 
 ```bash
 # 使用 electron-builder 自动签名
-npm run build:mac
+pnpm run dist:mac
 
 # 或手动签名
-codesign --force --deep --sign "Developer ID Application: Your Name" "dist/mac/RPA-AI 抓包工具.app"
+codesign --force --deep --sign "Developer ID Application: Your Name" "dist/mac/NetSniffer.app"
 ```
 
 ### Windows 签名
@@ -237,10 +234,10 @@ codesign --force --deep --sign "Developer ID Application: Your Name" "dist/mac/R
 
 ```bash
 # 使用 electron-builder 自动签名
-npm run build:win
+pnpm run dist:win
 
 # 或手动签名
-signtool sign /f certificate.p12 /p password "dist/win/RPA-AI 抓包工具 Setup 1.0.0.exe"
+signtool sign /f certificate.p12 /p password "dist/win/NetSniffer Setup 1.0.0.exe"
 ```
 
 ## 自动化构建
@@ -272,13 +269,13 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '16'
-        cache: 'npm'
+        cache: 'pnpm'
     
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile
     
     - name: Build application
-      run: npm run build:${{ matrix.os == 'macos-latest' && 'mac' || matrix.os == 'windows-latest' && 'win' || 'linux' }}
+      run: pnpm run ${{ matrix.os == 'macos-latest' && 'dist:mac' || matrix.os == 'windows-latest' && 'dist:win' || 'dist:linux' }}
     
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
@@ -303,15 +300,15 @@ async function buildAll() {
   
   // 构建 macOS
   console.log('构建 macOS...');
-  execSync('npm run build:mac', { stdio: 'inherit' });
+  execSync('pnpm run dist:mac', { stdio: 'inherit' });
   
   // 构建 Windows
   console.log('构建 Windows...');
-  execSync('npm run build:win', { stdio: 'inherit' });
+  execSync('pnpm run dist:win', { stdio: 'inherit' });
   
   // 构建 Linux
   console.log('构建 Linux...');
-  execSync('npm run build:linux', { stdio: 'inherit' });
+  execSync('pnpm run dist:linux', { stdio: 'inherit' });
   
   console.log('所有平台构建完成！');
 }
@@ -471,8 +468,8 @@ xattr -cr "dist/mac/RPA-AI 抓包工具.app"
 const { crashReporter } = require('electron');
 
 crashReporter.start({
-  productName: 'RPA-AI 抓包工具',
-  companyName: 'RPA-AI Team',
+productName: 'NetSniffer',
+companyName: 'NetSniffer Team',
   submitURL: 'https://your-error-tracking-service.com'
 });
 ```

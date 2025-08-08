@@ -67,8 +67,8 @@
 ## 技术实现
 
 ### 前端组件
-- 使用Vue 3 Composition API
-- Element Plus UI组件库
+- 使用 React + TypeScript
+- Ant Design 组件库
 - 响应式数据绑定
 - 标签页组件 (`el-tabs`)
 - 表格组件 (`el-table`)

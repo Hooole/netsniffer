@@ -1,6 +1,6 @@
 # GitHub 设置和上传指南
 
-本指南将帮助你将 RPA-AI 抓包工具项目上传到 GitHub，并设置自动构建和发布。
+本指南将帮助你将 NetSniffer 项目上传到 GitHub，并设置自动构建和发布。
 
 ## 📋 准备工作
 
@@ -34,7 +34,7 @@ git init
 git add .
 
 # 提交初始代码
-git commit -m "Initial commit: RPA-AI 抓包工具"
+git commit -m "Initial commit: NetSniffer"
 ```
 
 ### 2. 连接到 GitHub 仓库
@@ -118,7 +118,7 @@ git push origin v1.0.1
 
 在仓库设置中添加描述：
 ```
-NetSniffer - 基于 Electron + Vue.js + Whistle 的桌面抓包软件，支持 HTTP/HTTPS 请求拦截和分析。
+NetSniffer - 基于 Electron + React + TypeScript + Whistle 的桌面抓包软件，支持 HTTP/HTTPS 请求拦截和分析。
 ```
 
 ### 2. 主题标签
@@ -131,7 +131,7 @@ NetSniffer - 基于 Electron + Vue.js + Whistle 的桌面抓包软件，支持 H
 - `http-proxy`
 - `https-proxy`
 - `mitm`
-- `vue`
+- `react`
 - `element-plus`
 
 ### 3. 仓库网站

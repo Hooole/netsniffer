@@ -55,7 +55,7 @@ certPath ./certs/rootCA.crt
 keyPath ./certs/rootCA.key
 
 # 代理端口
-port 7788
+port 7890
 
 # 日志级别
 logLevel info
@@ -126,7 +126,7 @@ proxyAPI.clearProxy()
 ### 1. 启动应用
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 ### 2. 安装证书
@@ -155,7 +155,7 @@ npm run dev
 **问题**: Whistle 服务器启动超时
 
 **解决方案**:
-- 检查端口 7788 是否被占用
+- 检查端口 7890 是否被占用
 - 确保有足够的权限启动进程
 - 查看控制台日志获取详细错误信息
 
@@ -200,7 +200,7 @@ npm run dev
 1. **查看 Whistle 日志**:
    ```bash
    # 访问 Whistle 管理页面
-   http://localhost:7788
+http://localhost:7890
    ```
 
 2. **检查进程状态**:
@@ -210,7 +210,7 @@ npm run dev
 
 3. **查看端口占用**:
    ```bash
-   netstat -an | grep 7788
+netstat -an | grep 7890
    ```
 
 ### 3. 性能优化
@@ -239,4 +239,4 @@ npm run dev
 - [Whistle 官方文档](https://wproxy.org/whistle/)
 - [Whistle GitHub](https://github.com/avwo/whistle)
 - [Electron 文档](https://www.electronjs.org/docs)
-- [Vue.js 文档](https://vuejs.org/guide/) 
+- [React 文档](https://react.dev/learn)

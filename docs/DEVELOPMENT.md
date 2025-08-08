@@ -5,25 +5,25 @@
 ### 环境要求
 
 - Node.js >= 16.0.0
-- npm >= 8.0.0
+- pnpm >= 8.0.0
 - Git
 
 ### 克隆项目
 
 ```bash
 git clone <repository-url>
-cd rpa-ai
-npm install
+cd netsniffer
+pnpm install
 ```
 
 ### 开发模式
 
 ```bash
 # 启动开发模式
-npm run dev
+pnpm dev
 
 # 启动开发模式（打开开发者工具）
-npm run dev:debug
+pnpm electron-dev
 ```
 
 ## 项目架构
@@ -32,21 +32,20 @@ npm run dev:debug
 
 ```
 src/
-├── main/                 # 主进程代码
-│   ├── main.js          # 主进程入口
-│   ├── preload.js       # 预加载脚本
-│   └── ipc-handlers/    # IPC 处理器
-├── renderer/            # 渲染进程代码
-│   ├── index.html       # 主页面
-│   ├── app.js          # Vue 应用
-│   └── components/     # Vue 组件
-├── core/               # 核心功能模块
-│   ├── proxy-server.js # 代理服务器
-│   ├── certificate-manager.js # 证书管理器
-│   └── data-exporter.js # 数据导出器
-└── utils/              # 工具函数
-    ├── logger.js       # 日志工具
-    └── helpers.js      # 辅助函数
+├── main/                   # 主进程（TypeScript）
+│   ├── api/               # IPC API 注册
+│   ├── core/              # 业务核心（证书、代理等）
+│   ├── ipc-handlers/      # 旧版兼容处理（如有）
+│   ├── preload.ts         # 预加载脚本
+│   └── index.ts           # 主入口
+├── renderer/               # 渲染进程（React + TypeScript）
+│   ├── components/        # 通用组件（工具栏、对话框等）
+│   ├── extensions/        # 功能面板（抓包、证书、统计、设置等）
+│   ├── store/             # 状态管理（Zustand）
+│   ├── styles/            # 样式（Less/CSS）
+│   ├── index.html         # 渲染页模板
+│   └── index.tsx          # 渲染入口
+└── types/                 # 公共类型声明
 ```
 
 ### 架构说明
@@ -95,39 +94,27 @@ const exampleFunction = async (name, age) => {
 };
 ```
 
-#### Vue.js
-- 使用 Vue 3 组合式 API
-- 使用 `<script setup>` 语法
-- 组件名使用 PascalCase
-- 文件名使用 kebab-case
+#### React + TypeScript
+- 使用函数组件与 Hooks
+- 使用 Ant Design 组件库
+- 组件名使用 PascalCase；文件名建议 PascalCase.tsx 或 kebab-case.tsx
 
-```vue
-<template>
-  <div class="example-component">
-    <h1>{{ title }}</h1>
-    <button @click="handleClick">点击</button>
-  </div>
-</template>
+```tsx
+import React from 'react';
+import { Button, message } from 'antd';
 
-<script setup>
-import { ref, onMounted } from 'vue';
+export const ExampleComponent: React.FC = () => {
+  const handleClick = () => {
+    message.success('按钮被点击');
+  };
 
-const title = ref('示例组件');
-
-const handleClick = () => {
-  console.log('按钮被点击');
+  return (
+    <div className="example-component" style={{ padding: 20 }}>
+      <h1>示例组件</h1>
+      <Button type="primary" onClick={handleClick}>点击</Button>
+    </div>
+  );
 };
-
-onMounted(() => {
-  console.log('组件已挂载');
-});
-</script>
-
-<style scoped>
-.example-component {
-  padding: 20px;
-}
-</style>
 ```
 
 ### 文件命名
@@ -148,17 +135,18 @@ onMounted(() => {
 
 ### 1. 创建核心模块
 
-```javascript
-// src/core/new-feature.js
-const { logger } = require('../utils/logger');
+```ts
+// src/main/core/new-feature.ts
+import logger from 'electron-log';
 
-class NewFeature {
+export class NewFeature {
+  private readonly name = 'NewFeature';
+
   constructor() {
-    this.name = 'NewFeature';
     logger.info(`${this.name} 初始化`);
   }
 
-  async doSomething(data) {
+  async doSomething(data: unknown): Promise<{ success: boolean; data: string }>{
     try {
       logger.debug('执行操作', data);
       // 实现功能逻辑
@@ -169,91 +157,92 @@ class NewFeature {
     }
   }
 }
-
-module.exports = { NewFeature };
 ```
 
 ### 2. 添加 IPC 处理器
 
-```javascript
-// src/main/ipc-handlers/new-feature.js
-const { ipcMain } = require('electron');
-const { NewFeature } = require('../../core/new-feature');
+```ts
+// src/main/ipc-handlers/new-feature.ts
+import { ipcMain } from 'electron';
+import { NewFeature } from '../core/new-feature';
 
-let newFeature = null;
+let newFeature: NewFeature | null = null;
 
-function setup(mainWindow) {
+export function setupNewFeatureIPC(): void {
   newFeature = new NewFeature();
 
-  ipcMain.handle('new-feature-action', async (event, data) => {
+  ipcMain.handle('new-feature-action', async (_event, data) => {
     try {
-      const result = await newFeature.doSomething(data);
+      const result = await newFeature!.doSomething(data);
       return { success: true, data: result };
     } catch (error) {
-      return { success: false, message: error.message };
+      return { success: false, message: (error as Error).message };
     }
   });
 }
-
-module.exports = { setup };
 ```
 
 ### 3. 注册 IPC 处理器
 
-```javascript
-// src/main/ipc-handlers/index.js
-const newFeatureHandlers = require('./new-feature');
+```ts
+// src/main/ipc-handlers/index.ts
+import { setupNewFeatureIPC } from './new-feature';
 
-function setupIpcHandlers(mainWindow) {
+export function setupIpcHandlers(): void {
   // ... 现有处理器
-  newFeatureHandlers.setup(mainWindow);
+  setupNewFeatureIPC();
 }
 ```
 
 ### 4. 更新预加载脚本
 
-```javascript
-// src/main/preload.js
+```ts
+// src/main/preload.ts
+import { contextBridge, ipcRenderer } from 'electron';
+
 contextBridge.exposeInMainWorld('electronAPI', {
   // ... 现有 API
-  newFeatureAction: (data) => ipcRenderer.invoke('new-feature-action', data)
+  newFeature: {
+    action: (data: unknown) => ipcRenderer.invoke('new-feature-action', data),
+  },
 });
 ```
 
 ### 5. 添加前端界面
 
-```vue
-<!-- src/renderer/components/NewFeature.vue -->
-<template>
-  <div class="new-feature">
-    <el-button @click="handleAction" :loading="loading">
-      执行操作
-    </el-button>
-  </div>
-</template>
+```tsx
+// src/renderer/components/NewFeature.tsx
+import React from 'react';
+import { Button, message } from 'antd';
 
-<script setup>
-import { ref } from 'vue';
-import { ElMessage } from 'element-plus';
+export const NewFeature: React.FC = () => {
+  const [loading, setLoading] = React.useState(false);
 
-const loading = ref(false);
-
-const handleAction = async () => {
-  try {
-    loading.value = true;
-    const result = await window.electronAPI.newFeatureAction({ test: 'data' });
-    if (result.success) {
-      ElMessage.success('操作成功');
-    } else {
-      ElMessage.error(result.message);
+  const handleAction = async () => {
+    try {
+      setLoading(true);
+      // @ts-expect-error 通过 preload 暴露到 window
+      const result = await window.electronAPI.newFeature.action({ test: 'data' });
+      if (result.success) {
+        message.success('操作成功');
+      } else {
+        message.error(result.message);
+      }
+    } catch (error) {
+      message.error('操作失败');
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    ElMessage.error('操作失败: ' + error.message);
-  } finally {
-    loading.value = false;
-  }
+  };
+
+  return (
+    <div className="new-feature">
+      <Button type="primary" onClick={handleAction} loading={loading}>
+        执行操作
+      </Button>
+    </div>
+  );
 };
-</script>
 ```
 
 ## 调试技巧
@@ -306,7 +295,7 @@ npm run test:integration
 
 ### 手动测试
 
-1. 启动应用：`npm run dev`
+1. 启动应用：`pnpm dev`
 2. 测试功能流程
 3. 检查错误处理
 4. 验证用户体验
@@ -379,10 +368,10 @@ try {
 
 ```bash
 # 构建应用
-npm run build
+pnpm run build
 
 # 打包应用
-npm run package
+pnpm run dist
 ```
 
 ### 4. 发布

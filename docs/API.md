@@ -2,7 +2,7 @@
 
 ## 概述
 
-本文档描述了 RPA-AI 抓包工具的 API 接口，包括主进程和渲染进程之间的 IPC 通信接口。
+本本文档描述了 NetSniffer 的 API 接口，包括主进程和渲染进程之间的 IPC 通信接口。
 
 ## IPC 接口
 
@@ -13,7 +13,7 @@
 
 **参数:**
 - `config` (Object): 配置对象
-  - `port` (number): 代理端口，默认 7788
+  - `port` (number): 代理端口，默认 7890
   - `filter` (string): 域名过滤规则（可选）
 
 **返回值:**
@@ -27,7 +27,7 @@
 **示例:**
 ```javascript
 const result = await window.electronAPI.startCapture({
-  port: 7788,
+  port: 7890,
   filter: 'example.com'
 });
 ```
@@ -225,7 +225,7 @@ const result = await window.electronAPI.getCurrentProxy();
 
 **示例:**
 ```javascript
-const result = await window.electronAPI.setProxy('127.0.0.1', 7788);
+const result = await window.electronAPI.setProxy('127.0.0.1', 7890);
 ```
 
 #### clear-proxy
@@ -330,7 +330,7 @@ if (!certStatus.data.installed.installed) {
 
 // 2. 启动抓包
 const startResult = await window.electronAPI.startCapture({
-  port: 7788
+  port: 7890
 });
 
 if (startResult.success) {
