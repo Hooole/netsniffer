@@ -1,0 +1,71 @@
+---
+description: AI驻场管理系统开发规范
+globs: ['**/*']
+alwaysApply: true
+---
+
+# 项目上下文
+
+- 技术栈：Electron + React 18 + TypeScript + Ant Design 5 + Zustand + Webpack。
+- 路由：/resident 采用父子路由（ResidentLayout + 子页 dev/account/hero）。
+- 状态：轻量全局状态用 Zustand，不引入额外状态库。
+- 别名：@ 指向 src；@assets 指向 src/assets（tsconfig 与 webpack 同步）。
+- 代码风格：ESLint + Prettier，保存自动修复；避免内联样式，优先 CSS Modules（.module.less）。
+
+# 通用开发规则
+
+- 严禁直接推送远程或执行不可逆操作（删文件/大范围改动）未确认时先说明再执行。
+- 新增/修改接口：统一走 src/apis/http.ts 的 request/http，统一错误处理与 headers 注入。
+- 业务错误与网络错误：默认在 http 层用 antd message.error 统一提示；如需要静默传入 { silent: true }。
+- 请求头：自动附加 Authorization: Bearer ${token} 与 resident_id（见 shared/auth-storage）。
+- 环境：基础地址从 src/apis/env.ts 读取；如需切换用 setApiEnv 或 setBaseURL，勿散落写死 URL。
+- 登录：loginApi 返回 { code, msg, data:{ access_token,id,mobile,name } }，store 内用 setStoredUser 持久化。
+- 列表省略与 Tooltip：优先使用 Antd Typography.Text 的 ellipsis={{ tooltip: xxx }}，并配合样式 min-width:0/width:0 等保证生效。
+- 组件样式：优先 CSS Modules；与布局/溢出相关的样式放对应的 index.module.less；避免硬编码行内样式。
+- 命名：类型清晰、语义化；避免 any（除非兼容后端自由结构且注明原因）。
+- 提交信息：中文，简洁准确（fix:/feat:/chore: 等），不自动 push。
+
+# UI/交互细则
+
+- Ant Design 组件：
+  - 文本溢出：Typography.Text + ellipsis={{ tooltip: xxx }}；父容器需保证 flex:1 及 min-width:0/width:0。
+  - 表单：layout="vertical" + variant="filled"；校验信息中文。
+  - 弹窗：标题语义化；确认/取消文案与系统保持一致。
+- 列表类项：
+  - 单行显示 + 省略号；hover/选中态与现有样式一致。
+  - 右侧操作区尽量保持固定宽度，避免布局跳动。
+
+# API 层规范（src/apis）
+
+- 仅在 http.ts 内处理：
+  - 超时、HTTP 非 2xx、业务 code != 0 的统一异常与提示（可通过 silent 控制）。
+  - headers 自动注入 Authorization 与 resident_id（来源 shared/auth-storage）。
+- env.ts 统一维护 dev/test 基础地址；优先 AIRE_API_BASE 环境变量。
+- 平台列表：/rpa/platform/list，使用 GET，无分页；返回 data.list。
+- 类型管理：
+  - API 相关类型统一放在 src/apis/types 下；API 模块仅保留请求逻辑。
+  - 渲染进程通用类型统一放在 src/renderer/types 下，例如抓包推送结构 PushCaptureItem（仅前端使用）。
+  - 引入类型使用 import type，导出类型使用 export type，确保与 isolatedModules 兼容。
+
+# 目录/模块约定
+
+- resident（父路由） + dev/account/hero（子路由）；左侧开发商列表通过 /rpa/platform/list 渲染。
+- 删除的 resident-config 已废弃，不再引用。
+- 头像与用户名由 shared/auth-storage 读取。
+
+# 代码编辑指引（对 AI）
+
+- 变更前先找准文件与上下文（优先阅读对应模块的 index.tsx 与 index.module.less）。
+- 影响范围大的重构或删除，先说明计划与影响点，等待确认再改。
+- 提交变更后本地运行 ESLint/类型检查；避免引入 any，无法避免需加简短说明。
+- UI 细化：优先用现有样式体系与组件变体；避免新建全局样式。
+- 组件 render/JSX 中避免直接编写业务或复杂事件逻辑；提取为独立方法/自定义 Hook/Store action，在 JSX 中仅做方法绑定（如 onClick={handleXxx}）。
+- 全局弹框：优先复用 src/renderer/components/confirm 的 showConfirm（Promise 化），项目内不要直接使用 Modal.confirm。
+- 抓包数据处理：
+  - 首先过滤非微信端 UA（user-agent 不包含 MicroMessenger 的请求不参与分析）。
+  - 推送服务端的字段仅保留 method、url、host、statusCode、headers、requestHeaders、requestBody、responseBody。
+  - 如需批量推送，默认每批 30 条，可在场景中通过常量覆盖。
+
+# 提交/合并
+
+- 不自动 push；提交前自检 lint/types；提交信息中文并前缀类别（feat/fix/chore/docs/refactor）。

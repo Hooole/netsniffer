@@ -1,0 +1,210 @@
+{
+  "name": "netsniffer",
+  "version": "2.0.3",
+  "description": "NetSniffer - 基于 Electron 的现代化网络抓包工具，支持 HTTP/HTTPS 请求拦截和分析",
+  "main": "dist/main.js",
+  "homepage": "https://github.com/Hooole/netsniffer",
+  "author": {
+    "name": "NetSniffer Team",
+    "email": "team@netsniffer.app"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Hooole/netsniffer.git"
+  },
+  "keywords": [
+    "netsniffer",
+    "electron",
+    "packet-capture",
+    "network-analysis",
+    "http-proxy",
+    "https-proxy",
+    "mitm",
+    "react",
+    "typescript",
+    "antd"
+  ],
+  "scripts": {
+    "start": "electron ./dist/main.js",
+    "dev": "concurrently \"npm run renderer-dev\" \"wait-on http://localhost:3000 && npm run electron-dev\"",
+    "renderer-dev": "webpack-dev-server --config ./webpack/webpack.renderer.dev.config.js",
+    "electron-dev": "webpack --config ./webpack/webpack.main.config.js && cross-env NODE_ENV=development electron ./dist/main.js --dev --inspect=9229 --remote-debugging-port=9222",
+    "main-dev": "webpack --config ./webpack/webpack.main.config.js && electron ./app/main.js",
+    "compile-main": "cross-env NODE_ENV=production webpack --config ./webpack/webpack.main.prod.config.js",
+    "compile-renderer": "cross-env NODE_ENV=production webpack --config ./webpack/webpack.renderer.prod.config.js",
+    "compile": "npm run compile-main && npm run compile-renderer",
+    "build": "npm run clean:dist && npm run compile",
+    "build:test": "npm run clean:dist && cross-env API_ENV=test npm run compile",
+    "build:release": "npm run clean:dist && cross-env API_ENV=release npm run compile",
+    "build:prod": "npm run clean:dist && cross-env API_ENV=prod npm run compile",
+    "dist": "npm run clean:all && npm run build && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --win --x64 --publish never && npm run clean:unpacked",
+    "dist:test": "npm run clean:all && npm run build:test && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --win --x64 --publish never && npm run clean:unpacked",
+    "dist:release": "npm run clean:all && npm run build:release && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --win --x64 --publish never && npm run clean:unpacked",
+    "dist:prod": "npm run clean:all && npm run build:prod && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --win --x64 --publish never && npm run clean:unpacked",
+    "dist:mac": "npm run clean:all && npm run build && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --x64 && npm run clean:unpacked",
+    "dist:mac:test": "npm run clean:all && npm run build:test && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --x64 && npm run clean:unpacked",
+    "dist:mac:prod": "npm run clean:all && npm run build:prod && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac --x64 && npm run clean:unpacked",
+    "dist:win": "npm run clean:all && npm run build && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win --x64 && npm run clean:unpacked",
+    "dist:win:test": "npm run clean:all && npm run build:test && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win --x64 && npm run clean:unpacked",
+    "dist:win:prod": "npm run clean:all && npm run build:prod && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win --x64 && npm run clean:unpacked",
+    "dist:linux": "npm run clean:all && npm run build && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --linux --x64 && npm run clean:unpacked",
+    "dist:linux:test": "npm run clean:all && npm run build:test && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --linux --x64 && npm run clean:unpacked",
+    "dist:linux:prod": "npm run clean:all && npm run build:prod && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --linux --x64 && npm run clean:unpacked",
+    "lint": "eslint ./src/**/*.ts ./src/**/*.tsx --fix",
+    "clean:dist": "npx rimraf dist",
+    "clean:release": "npx rimraf cdnStatic/release",
+    "clean:all": "npm run clean:dist && npm run clean:release",
+    "clean:blockmap": "find cdnStatic/release -name '*.blockmap' -delete 2>/dev/null || true",
+    "clean:unpacked": "npx rimraf cdnStatic/release/mac cdnStatic/release/mac-arm64 cdnStatic/release/win-unpacked",
+    "postinstall": "electron-builder install-app-deps",
+    "icon:icns": "node ./scripts/generate-icns.js --input ./src/assets/icon.png --output ./src/assets/icon.icns",
+    "upload": "yupload -d cdnStatic --name @qmyx/netsniffer"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.2.6",
+    "antd": "^5.12.8",
+    "classnames": "^2.3.2",
+    "electron-better-ipc": "^2.0.1",
+    "electron-is-dev": "^2.0.0",
+    "electron-log": "^5.0.1",
+    "electron-store": "^8.1.0",
+    "electron-window-state": "^5.0.3",
+    "fs-extra": "^11.1.1",
+    "graceful-fs": "^4.2.11",
+    "i18next": "^23.7.8",
+    "jsonfile": "^6.1.0",
+    "lodash": "^4.17.21",
+    "monaco-editor": "^0.39.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^13.5.0",
+    "react-keep-alive": "^2.5.2",
+    "react-monaco-editor": "^0.54.0",
+    "react-router-dom": "^6.26.1",
+    "sudo-prompt": "^9.2.1",
+    "universalify": "^2.0.0",
+    "whistle": "^2.9.99",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.6",
+    "@babel/preset-env": "^7.23.6",
+    "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
+    "@types/fs-extra": "^11.0.4",
+    "@types/lodash": "^4.14.202",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@yunke/upload": "^1.0.0",
+    "assert": "^2.1.0",
+    "babel-loader": "^9.1.3",
+    "babel-plugin-import": "^1.13.8",
+    "buffer": "^6.0.3",
+    "concurrently": "^9.2.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.8.1",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.6.4",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.0",
+    "eslint-plugin-react": "^7.33.2",
+    "events": "^3.3.0",
+    "html-webpack-plugin": "^5.6.0",
+    "https-browserify": "^1.0.0",
+    "less": "^4.2.0",
+    "less-loader": "^11.1.4",
+    "monaco-editor-webpack-plugin": "^7.1.0",
+    "path-browserify": "^1.0.1",
+    "png2icons": "^2.0.1",
+    "prettier": "^3.1.1",
+    "process": "^0.11.10",
+    "rimraf": "^5.0.5",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.3.3",
+    "url": "^0.11.4",
+    "util": "^0.12.5",
+    "wait-on": "^8.0.4",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.10.0"
+  },
+  "build": {
+    "appId": "com.netsniffer.app",
+    "productName": "NetSniffer",
+    "directories": {
+      "output": "cdnStatic/release"
+    },
+    "files": [
+      "dist/*.js",
+      "dist/*.html",
+      "dist/*.gif",
+      "dist/*.png",
+      "dist/*.jpg",
+      "dist/*.jpeg",
+      "dist/*.svg",
+      "dist/static/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "node_modules/whistle/**",
+      "dist/whistle-child.js"
+    ],
+    "extraResources": [
+      {
+        "from": "src/assets/icon.ico",
+        "to": "icon.ico"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "src/assets/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "win": {
+      "icon": "src/assets/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "icon": "src/assets/icon.png",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Development"
+    }
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

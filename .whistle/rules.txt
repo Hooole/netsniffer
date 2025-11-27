@@ -1,0 +1,3 @@
+# Whistle规则文件
+# 启用请求体捕获
+/.*/ enable://capture 
